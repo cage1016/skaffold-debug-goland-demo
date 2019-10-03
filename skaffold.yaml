@@ -1,0 +1,33 @@
+apiVersion: skaffold/v1beta15
+kind: Config
+build:
+  local: {}
+  tagPolicy:
+    sha256: {}
+  artifacts:
+    - image: cage1016/skaffold-debug-go-demo-addsvc
+      custom:
+        buildCommand: "make dev_docker_addsvc"
+        dependencies:
+          paths:
+            - cmd/addsvc/main.go
+            - pkg/addsvc
+deploy:
+  kubectl:
+    manifests:
+      - ./deployments/k8s/addsvc.yaml
+
+profiles:
+  - name: debug
+    build:
+      local: {}
+      tagPolicy:
+        sha256: {}
+      artifacts:
+        - image: cage1016/skaffold-debug-go-demo-addsvc
+          custom:
+            buildCommand: "make debug_docker_addsvc"
+            dependencies:
+              paths:
+                - cmd/addsvc/main.go
+                - pkg/addsvc

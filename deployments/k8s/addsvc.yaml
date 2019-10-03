@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: addsvc
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: addsvc
+  template:
+    metadata:
+      labels:
+        app: addsvc
+    spec:
+      containers:
+        - name: addsvc
+          env:
+            - name: QS_ADDSVC_GRPC_PORT
+              value: "8021"
+            - name: QS_ADDSVC_HTTP_PORT
+              value: "8020"
+            - name: QS_ADDSVC_LOG_LEVEL
+              value: info
+          image: cage1016/skaffold-debug-go-demo-addsvc
+          ports:
+            - containerPort: 8020
+            - containerPort: 8021
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: addsvc
+spec:
+  type: LoadBalancer
+  selector:
+    app: addsvc
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8020
+      targetPort: 8020

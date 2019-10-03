@@ -1,0 +1,4 @@
+FROM scratch
+ARG BINARY
+COPY $BINARY /exe
+ENTRYPOINT ["/exe"]
